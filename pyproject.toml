@@ -1,0 +1,33 @@
+[project]
+name = "threedee-mcp"
+version = "0.1.0"
+description = "3D MCP generation project"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.0.0",
+    "python-dotenv>=1.0.1",
+    # add other dependencies your project needs
+]
+
+[[project.authors]]
+name = "Ravina Patel"
+email = "ravinapatel738@gmail.com"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+threedee-mcp = "threedee:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/threedee"]
+
+[dependency-groups]
+dev = [
+    "threedee-mcp",
+]
+
+[tool.uv.sources]
+threedee-mcp = { workspace = true }
