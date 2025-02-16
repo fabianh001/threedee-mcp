@@ -5,8 +5,8 @@ from .tools import mcp
 logger = logging.getLogger(__name__)
 
 def main():
-    """Entry point for the surf-mcp application."""
-    logger.info("Starting Surf MCP server")
+    """Entry point for the threedee-mcp application."""
+    logger.info("Starting 3D MCP server")
     try:
         mcp.run(transport='stdio')
         logger.info("Server initialized successfully")

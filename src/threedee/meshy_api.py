@@ -10,71 +10,85 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
-class StormGlassAPI:
-    """Handler for Storm Glass API interactions."""
+class MeshyAPI:
+    """Handler for Meshy API interactions."""
     
     def __init__(self):
-        self.api_base = "https://api.stormglass.io/v2"
-        self.api_key = os.getenv("STORMGLASS_API_KEY", "")
-        self.user_agent = "surf-app/1.0"
+        self.api_base = "https://api.meshy.ai"
+        self.api_key = os.getenv("MESHY_API_KEY", "")
+        self.user_agent = "threedee-app/1.0"
         
-    async def make_request(self, url: str) -> dict[str, Any] | None:
-        """Make a request to the Storm Glass API with proper error handling."""
+    async def make_request(self, url: str, method: str = "GET", data: dict = None) -> dict[str, Any] | None:
+        """Make a request to the Meshy API with proper error handling."""
         headers = {
-            "Authorization": self.api_key,
-            "User-Agent": self.user_agent
+            "Authorization": f"Bearer {self.api_key}",
+            "User-Agent": self.user_agent,
+            "Content-Type": "application/json"
         }
+        
         async with httpx.AsyncClient() as client:
             try:
-                response = await client.get(url, headers=headers, timeout=30.0)
+                if method == "GET":
+                    response = await client.get(url, headers=headers, timeout=30.0)
+                else:  # POST
+                    response = await client.post(url, headers=headers, json=data, timeout=30.0)
                 response.raise_for_status()
                 return response.json()
             except Exception as e:
                 logger.error(f"API request failed: {str(e)}")
                 return None
 
-    def format_tide_data(self, data: dict) -> str:
-        """Format tide data into a readable string."""
-        if not data or "data" not in data:
-            return "No tide data available."
+    async def create_preview_task(self, prompt: str, art_style: str = "realistic", 
+                                seed: int = None, ai_model: str = "meshy-4",
+                                topology: str = "triangle", target_polycount: int = 30000,
+                                should_remesh: bool = True, symmetry_mode: str = "auto") -> dict[str, Any] | None:
+        """Create a Text to 3D Preview task."""
+        url = f"{self.api_base}/openapi/v2/text-to-3d"
         
-        result = ["Tide Times:"]
-        for tide in data["data"]:
-            time_utc = tide["time"]
-            time_local = f"{time_utc} (UTC)"
-            
-            result.append(f"""
-Time: {time_local}
-Type: {tide['type'].upper()} tide
-Height: {tide['height']:.2f}m
-""")
-        
-        # Add station information
-        if "meta" in data and "station" in data["meta"]:
-            station = data["meta"]["station"]
-            result.append(f"""
-Station Information:
-Name: {station['name']}
-Distance: {station['distance']}km from requested location
-""")
-        
-        return "\n".join(result)
-
-    async def get_tide_data(self, latitude: float, longitude: float, date: str) -> str:
-        """Get tide information for a specific location and date."""
-        url = f"{self.api_base}/tide/extremes/point"
-        params = {
-            "lat": latitude,
-            "lng": longitude,
-            "start": f"{date}T00:00:00Z",
-            "end": f"{date}T23:59:59Z"
+        data = {
+            "mode": "preview",
+            "prompt": prompt,
+            "art_style": art_style,
+            "should_remesh": should_remesh,
+            "topology": topology,
+            "target_polycount": target_polycount,
+            "symmetry_mode": symmetry_mode,
+            "ai_model": ai_model
         }
+        if seed is not None:
+            data["seed"] = seed
+            
+        return await self.make_request(url, method="POST", data=data)
+
+    async def create_refine_task(self, preview_task_id: str, enable_pbr: bool = False,
+                                texture_prompt: str = None) -> dict[str, Any] | None:
+        """Create a Text to 3D Refine task."""
+        url = f"{self.api_base}/openapi/v2/text-to-3d"
         
+        data = {
+            "mode": "refine",
+            "preview_task_id": preview_task_id,
+            "enable_pbr": enable_pbr
+        }
+        if texture_prompt:
+            data["texture_prompt"] = texture_prompt
+            
+        return await self.make_request(url, method="POST", data=data)
+
+    async def get_task(self, task_id: str) -> dict[str, Any] | None:
+        """Retrieve a Text to 3D task."""
+        url = f"{self.api_base}/openapi/v2/text-to-3d/{task_id}"
+        return await self.make_request(url)
+
+    async def list_tasks(self, page_num: int = 1, page_size: int = 10, 
+                        sort_by: str = "-created_at") -> dict[str, Any] | None:
+        """List Text to 3D tasks."""
+        url = f"{self.api_base}/openapi/v2/text-to-3d"
+        params = {
+            "page_num": page_num,
+            "page_size": min(page_size, 50),  # Maximum allowed is 50
+            "sort_by": sort_by
+        }
         param_string = "&".join(f"{k}={v}" for k, v in params.items())
-        full_url = f"{url}?{param_string}"
-        
-        data = await self.make_request(full_url)
-        if not data:
-            return "Unable to fetch tide data for this location."
-        
-        return self.format_tide_data(data) 
+        url = f"{url}?{param_string}"
+        return await self.make_request(url) 
