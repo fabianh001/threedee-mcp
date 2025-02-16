@@ -1,0 +1,1 @@
+export const attributes = ['Japanese', 'Swedish', 'French', 'Romatic', 'Modern']
