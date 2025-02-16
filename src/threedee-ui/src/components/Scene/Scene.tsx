@@ -1,11 +1,11 @@
 import * as THREE from 'three'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber'
 import { useLoader } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
-
-
+// import * as mcpServer from '../../services/mcp';
+import { Html } from '@react-three/drei'
 
 // export function Box(props: ThreeElements['mesh']) {
 export function Box(props: ThreeElements['mesh']) {
@@ -13,8 +13,6 @@ export function Box(props: ThreeElements['mesh']) {
     const [hovered, setHover] = useState(false)
     const [active, setActive] = useState(false)
     useFrame((state, delta) => (meshRef.current.rotation.x += delta))
-
-    // return <p>BOX</p>
 
     return (
         <mesh
@@ -33,7 +31,34 @@ export function Box(props: ThreeElements['mesh']) {
 export default function Scene() {
     
     const gltf = useLoader(GLTFLoader, 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/refs/heads/main/2.0/Avocado/glTF/Avocado.gltf')
-    console.log(gltf)
+
+    // const [mcpClient, setMcpClient] = useState<any | null>(null);
+    // const [prompts, setPrompts] = useState([]);
+
+    // useEffect(() => {
+    //     async function startClient() {
+    //         const client = await mcpServer.startClient();
+    //         console.log("client:", client);
+    //         setMcpClient(client);
+    //     }
+
+    //     startClient();
+    // }, [])
+
+    // useEffect(() => {
+    //     if (mcpClient) {
+    //         async function listPrompts() {
+    //             const prompts = await mcpClient.listPrompts();
+    //             console.log("client prompts:", prompts);
+    //             setPrompts(prompts);
+    //         }
+
+        
+    //         listPrompts();
+    //     }
+    // }, [mcpClient])
+
+    
 
     return (
         <Canvas>
@@ -47,7 +72,21 @@ export default function Scene() {
                 position={[1.2, 0, 0]} 
                 scale={[100, 100, 100]}
             />
+            {/* <Html center>
+                <div style={{ color: 'white' }}>
+                    <h1>MCP</h1>
+                    <p>MCP server is {mcpClient ? 
+                        <p style={{ color: 'green' }}> 'connected' </p> :
+                        <p style={{ color: 'red' }}> 'not connected' </p>
+                    }</p>
+                    <p>List of prompts:</p>
+                    <ul>
+                        {prompts.map((prompt, index) => (
+                            <li key={index}>{prompt}</li>
+                        ))}
+                    </ul>
+                </div>
+            </Html> */}
         </Canvas>
     )
-
 }
