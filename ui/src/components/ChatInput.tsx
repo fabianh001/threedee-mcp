@@ -68,7 +68,7 @@ export const ChatInput: React.FunctionComponent = () => {
           />
         )}
       </div>
-      <TextField content="" />
+      <TextField content="Here's a contemporary high-rise apartment complex featuring multiple towers with glass facades, rooftop terraces, underground parking, and shared outdoor amenities." />
     </div>
   );
 };

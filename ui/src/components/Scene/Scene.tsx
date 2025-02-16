@@ -29,7 +29,7 @@ export function Box(props: THREE.Mesh) {
 function Model({ autoRotate }: { autoRotate: boolean }) {
   const gltf = useLoader(
     GLTFLoader,
-    "/src/components/Scene/loading.glb",
+    "/src/components/Scene/reply.glb",
     undefined,
     (error) => {
       console.error("An error occurred loading the GLTF model:", error);
