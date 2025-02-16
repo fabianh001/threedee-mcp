@@ -118,10 +118,9 @@ const Scene = () => {
           fontSize: "18px",
           transition: "background-color 200ms",
           boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-          hover: {
-            backgroundColor: "rgb(243, 244, 246)",
-          },
         }}
+        onMouseOver={(e) => e.currentTarget.style.backgroundColor = "rgb(243, 244, 246)"}
+        onMouseOut={(e) => e.currentTarget.style.backgroundColor = "white"}
       >
         {autoRotate ? "Stop Rotation" : "Start Rotation"}
       </button>
