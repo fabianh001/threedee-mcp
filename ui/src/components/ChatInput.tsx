@@ -8,6 +8,8 @@ interface ChatInputProps {
   inputValue: string;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
   onSubmit: (value: string) => void;
+  progress: number | null;
+  setProgress: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 export const ChatInput: React.FunctionComponent<ChatInputProps> = ({
@@ -56,6 +58,7 @@ export const ChatInput: React.FunctionComponent<ChatInputProps> = ({
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
           />
+
           <button className="border inline-flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 rounded-full text-gray-600 text-sm transition-colors">
             <LightbulbIcon className="h-5 w-5 text-gray-600" />
             Add Image

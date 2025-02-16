@@ -32,6 +32,7 @@ function PromptsList() {
 
 function App() {
   const [prompt, setPrompt] = useState<string>("Create a nice tree house");
+  const [progress, setProgress] = useState<number | null>(null);
   const [taskId, setTaskId] = useState<string | null>(null);
   const [sceneURL, setSceneURL] = useState<string | undefined>(undefined);
 
@@ -59,8 +60,12 @@ function App() {
       if (result3.finished_at) {
         finished = true;
         setSceneURL(result3.model_urls.glb);
-        console.log("Scene URL: ", result3.models_urls.glb);
+        console.log("Scene URL: ", result3.model_urls.glb);
+        setPrompt("");
       }
+
+      const progress = result3.progress;
+      setPrompt(`Waiting for model to be generated ${progress}%`);
       // sleep 10 sec
       await new Promise(r => setTimeout(r, 10000));
     
@@ -76,6 +81,8 @@ function App() {
         inputValue={prompt}
         setInputValue={setPrompt}
         onSubmit={onChangePrompt}
+        progress={progress}
+        setProgress={setProgress}
       />
     </div>
   );
