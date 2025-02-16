@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { useRef, useState } from "react";
+import {  useRef, useState } from "react";
 import { Canvas, useFrame, ThreeEvent } from "@react-three/fiber";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -26,10 +26,10 @@ export function Box(props: THREE.Mesh) {
   );
 }
 
-function Model({ autoRotate }: { autoRotate: boolean }) {
+function Model({ autoRotate, url='/src/components/Scene/loading.glb' }: { autoRotate: boolean, url?: string }) {
   const gltf = useLoader(
     GLTFLoader,
-    "/src/components/Scene/loading.glb",
+    url ? url : '/src/components/Scene/loading.glb',
     undefined,
     (error) => {
       console.error("An error occurred loading the GLTF model:", error);
@@ -94,8 +94,12 @@ function Model({ autoRotate }: { autoRotate: boolean }) {
   );
 }
 
-const Scene = () => {
+const Scene = ({sceneUrl}: {sceneUrl?: string}) => {
   const [autoRotate, setAutoRotate] = useState(true);
+
+
+
+
 
   return (
     <>
@@ -154,7 +158,7 @@ const Scene = () => {
             decay={0}
             intensity={Math.PI}
           />
-          <Model autoRotate={autoRotate} />
+          <Model autoRotate={autoRotate} url={sceneUrl} />
         </Canvas>
       </div>
     </>

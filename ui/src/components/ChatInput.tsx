@@ -3,9 +3,19 @@ import { Plus, LightbulbIcon } from "lucide-react";
 
 import { ContextMenu } from "./ContextMenu";
 
-export const ChatInput: React.FunctionComponent = () => {
+interface ChatInputProps {
+  inputValue: string;
+  setInputValue: React.Dispatch<React.SetStateAction<string>>;
+  onSubmit: (value: string) => void;
+}
+
+export const ChatInput: React.FunctionComponent<ChatInputProps> = ({
+  inputValue,
+  setInputValue,
+  onSubmit,
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [inputValue, setInputValue] = useState<string>("");
+  // const [inputValue, setInputValue] = useState<string>("");
   const [isContextMenuOpen, setIsContextMenuOpen] = useState<boolean>(false);
   const [selectedAttributes, setSelectedAttributes] = useState<string[]>([]);
 
@@ -17,7 +27,9 @@ export const ChatInput: React.FunctionComponent = () => {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      alert(inputValue + " Following attributes used: " + selectedAttributes);
+      const input = !selectedAttributes ? inputValue : inputValue + " Following attributes used: " + selectedAttributes;
+      onSubmit(input);
+      // alert(inputValue + " Following attributes used: " + selectedAttributes);
       setInputValue("");
     }
   };
