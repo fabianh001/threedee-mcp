@@ -4,8 +4,10 @@ import { ChatInput } from "./components/ChatInput";
 
 function App() {
   return (
-    <div>
-      <Scene />
+    <div className="h-screen flex flex-col">
+      <div className="flex-1">
+        <Scene />
+      </div>
       <ChatInput />
     </div>
   );
