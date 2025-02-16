@@ -3,6 +3,7 @@ import httpx
 from typing import Any
 import logging
 from dotenv import load_dotenv
+import base64
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -105,4 +106,44 @@ class MeshyAPI:
         }
         param_string = "&".join(f"{k}={v}" for k, v in params.items())
         url = f"{url}?{param_string}"
-        return await self.make_request(url) 
+        return await self.make_request(url)
+
+    async def create_image_to_3d_task(self, image_url: str, enable_pbr: bool = False,
+                                    should_remesh: bool = True, should_texture: bool = True,
+                                    ai_model: str = "meshy-4", topology: str = "triangle",
+                                    target_polycount: int = 30000, symmetry_mode: str = "auto") -> dict[str, Any] | None:
+        """Create an Image to 3D task."""
+        url = f"{self.api_base}/openapi/v1/image-to-3d"
+        
+        data = {
+            "image_url": image_url,
+            "enable_pbr": enable_pbr,
+            "should_remesh": should_remesh,
+            "should_texture": should_texture,
+            "ai_model": ai_model,
+            "topology": topology,
+            "target_polycount": target_polycount,
+            "symmetry_mode": symmetry_mode
+        }
+        
+        response = await self.make_request(url, method="POST", data=data)
+        if response:
+            return {"task_id": response["result"]}
+        return None
+
+    def image_file_to_data_uri(self, file_path: str) -> str:
+        """Convert an image file to a base64 data URI.
+        
+        Args:
+            file_path: Path to the local image file (jpg, jpeg, or png)
+            
+        Returns:
+            Base64 data URI string
+        """
+        with open(file_path, 'rb') as image_file:
+            encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+        
+        # Determine mime type from file extension
+        mime_type = "image/jpeg" if file_path.lower().endswith(('.jpg', '.jpeg')) else "image/png"
+        
+        return f"data:{mime_type};base64,{encoded_image}" 
