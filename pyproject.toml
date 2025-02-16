@@ -5,7 +5,8 @@ description = "3D MCP generation project"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "mcp>=1.0.0",
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.0.0",
     "python-dotenv>=1.0.1",
     # add other dependencies your project needs
 ]
