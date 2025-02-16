@@ -77,22 +77,6 @@ function App() {
         setInputValue={setPrompt}
         onSubmit={onChangePrompt}
       />
-      {/* <div 
-        // this is a floating card on top of everything
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          padding: "20px",
-          backgroundColor: "white",
-          borderRadius: "10px",
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-          zIndex: 1000,
-        }}
-      >
-        <PromptsList />
-      </div> */}
     </div>
   );
 }
