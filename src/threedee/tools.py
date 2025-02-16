@@ -73,4 +73,35 @@ async def list_3d_tasks(page_num: int = 1, page_size: int = 10,
     Returns:
         Dictionary containing the paginated list of tasks
     """
-    return await api.list_tasks(page_num, page_size, sort_by) 
+    return await api.list_tasks(page_num, page_size, sort_by)
+
+@mcp.tool()
+async def create_image_to_3d(image_url: str, enable_pbr: bool = False,
+                           should_remesh: bool = True, should_texture: bool = True,
+                           ai_model: str = "meshy-4", topology: str = "triangle",
+                           target_polycount: int = 30000, symmetry_mode: str = "auto") -> dict:
+    """Create an Image to 3D task.
+    
+    Args:
+        image_url: URL or base64 data URI of the input image
+        enable_pbr: Generate PBR maps (metallic, roughness, normal)
+        should_remesh: Whether to enable remeshing
+        should_texture: Whether to enable texturing
+        ai_model: AI model to use (default: "meshy-4")
+        topology: Mesh topology ("quad" or "triangle")
+        target_polycount: Target number of polygons (100-300000)
+        symmetry_mode: Symmetry behavior ("off", "auto", or "on")
+        
+    Returns:
+        Dictionary containing the task information
+    """
+    return await api.create_image_to_3d_task(
+        image_url=image_url,
+        enable_pbr=enable_pbr,
+        should_remesh=should_remesh,
+        should_texture=should_texture,
+        ai_model=ai_model,
+        topology=topology,
+        target_polycount=target_polycount,
+        symmetry_mode=symmetry_mode
+    ) 
