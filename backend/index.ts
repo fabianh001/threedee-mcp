@@ -3,7 +3,10 @@ import cors from 'cors';
 import Anthropic from '@anthropic-ai/sdk';
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import dotenv from 'dotenv';
 
+// Load environment variables from a .env file
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -20,15 +23,16 @@ if (!MESHY_API_KEY) {
 
 // Initialize MCP client
 const transport = new StdioClientTransport({
-    command: "uv",
+    command: "uv",  // Ensure that 'uv' is installed in your Codespaces environment
     args: [
         "--directory",
-        "/Users/claudio/Documents/threedee-mcp/mcp/src/threedee",
+        "./mcp/src/threedee",
         "run",
         "threedee-mcp"
     ],
     env: {
-      MESHY_API_KEY: MESHY_API_KEY
+      MESHY_API_KEY: MESHY_API_KEY,
+      ...process.env  // Pass all environment variables to the subprocess
     }
 });
 
@@ -117,16 +121,7 @@ const process_prompt = async (prompt: string) => {
   ];
 
   const response = await client.listTools();
-  // console.log('Available tools:', response.tools);
-
-  // create_3d_preview
   const FILTER_TOOLS = ['create_3d_preview']; 
-
-  // const available_tools = response.tools.map(tool => ({
-  //   name: tool.name,
-  //   description: tool.description,
-  //   input_schema: tool.inputSchema
-  // }));
 
   const available_tools = response.tools.filter(tool => FILTER_TOOLS.includes(tool.name)).map(tool => ({
     name: tool.name,
@@ -153,7 +148,6 @@ const process_prompt = async (prompt: string) => {
     name: tool_name,
     arguments: tool_args
   });
-  // tool_results.push({ call: tool_name, result });
   console.log('Tool result:', result);
 
   return { 
