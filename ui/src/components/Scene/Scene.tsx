@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "../../../node_modules/@types/three";
 import { useRef, useState } from "react";
 import { Canvas, useFrame, ThreeElements } from "@react-three/fiber";
 import { useLoader } from "@react-three/fiber";
