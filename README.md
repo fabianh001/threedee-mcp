@@ -58,16 +58,16 @@ Add the following configuration to your JSON file:
 
 ```json
 {
-    "surf-mcp": {
+    "threedee-mcp": {
         "command": "uv",
         "args": [
             "--directory",
-            "/Users/YOUR_USERNAME/Code/surf-mcp",
+            "/Users/YOUR_USERNAME/Code/threedee-mcp",
             "run",
-            "surf-mcp"
+            "threedee-mcp"
         ],
         "env": {
-            "STORMGLASS_API_KEY": "your_api_key_here"
+            "MESHY_API_KEY": "msy_zzQl7GKSeSqaMnKa565G6FIBK36BzfVS2kfZ"
         }
     }
 }
